@@ -191,7 +191,7 @@ void ArgosPidComponent::setup() {
 
 void ArgosPidComponent::dump_config() {
   ESP_LOGCONFIG(TAG, "Argos PID:");
-  ESP_LOGCONFIG(TAG, "  Version: 1.0");
+  ESP_LOGCONFIG(TAG, "  Version: 1.1");
   ESP_LOGCONFIG(TAG, "  Mode: %s", this->proxy_mode_ ? "PROXY / DIAGNOSTIC" : "LOCAL / HA CONFIG");
   ESP_LOGCONFIG(TAG, "  Bind IP: %s", this->bind_ip_.c_str());
   ESP_LOGCONFIG(TAG, "  Expected device IP: %s", this->expected_device_ip_.c_str());
