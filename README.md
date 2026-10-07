@@ -190,4 +190,8 @@ Zobacz [CHANGELOG_v1.1.txt](CHANGELOG_v1.1.txt).
 
 ## Licencja
 
-Repozytorium na razie nie zawiera jawnie wybranej licencji.
+Ten projekt jest udostępniany na licencji **GNU General Public License v3.0 (GPL-3.0-only)**.
+
+Możesz używać, modyfikować i rozpowszechniać kod zgodnie z warunkami GPLv3. Jeżeli rozpowszechniasz zmodyfikowaną wersję projektu, jej kod źródłowy również musi pozostać dostępny na warunkach GPLv3.
+
+Pełny tekst licencji znajduje się w pliku [LICENSE](LICENSE).
