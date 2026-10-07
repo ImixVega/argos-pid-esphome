@@ -1,0 +1,125 @@
+MAPA PROTOKOLU ARGOS PID PLUS - v1.1
+====================================
+
+Kodowanie wartosci: ASCII HEX bez 0x.
+
+Potwierdzone pola konfiguracyjne:
+B2  kociol noc [C]
+B3  kociol dzien [C]
+C1  palnik podawanie [s]
+C2  palnik przerwa [s]
+C3  nadmuch max [%]
+C4  nadmuch min [%]
+C5  moc minimalna [%]
+E1  podtrzymanie czas pracy
+E2  podtrzymanie czas pauzy
+E3  podtrzymanie nadmuch
+E4  podaj co N cykli
+E5  krotnosc podania
+F2  pompa CO tryb: 0 wyl, 1 wl, 2 regulator
+F3  pompa CO temperatura zalaczenia
+F4  pompa CO histereza
+G2  CWU tryb: 0 wyl, 1 wl, 2 regulator
+G3  CWU temperatura zadana
+G4  CWU histereza
+G5  CWU priorytet +0..9 C
+H2  cyrkulacja: 0 wyl, 1 wl, 2 cykliczna
+H3  cyrkulacja temperatura CO
+H4  cyrkulacja temperatura CWU
+H5  cyrkulacja histereza
+H6  cyrkulacja czas pracy [min]
+H7  cyrkulacja czas przerwy [min]
+I2  zawor: 0 wyl, 1 mieszacz
+I3  zawor dzien [C]
+I4  zawor noc [C]
+K3  lato/zima: 0 staly zima, 1 auto, 2 staly lato
+K4  czas wymuszenia zimy [h]
+K5  stan wymuszenia: 0 zatrzymany, 1 odliczanie
+
+Niewyjasnione / poza lokalnym edytorem v1.1:
+C7, C9
+J1/J2/J3
+J6/J7/J8
+JC/JD/JE
+J11/J12/J13
+J17/J18/J19
+L2/L3
+J1C/J1D/J1E
+
+Harmonogramy J*: maski 24-bit, FFFFFF = wszystkie godziny aktywne.
+Dokladne mapowanie grup/bitow pozostaje do ewentualnego testu przez proxy.
+
+ZAPIS KONFIGURACJI v1.1
+------------------------
+- edycje HA sa staged w RAM,
+- przycisk ZAPISZ zleca transakcje przy najblizszym swiezym POST Argosa,
+- czesciowa odpowiedz konfiguracyjna zostala eksperymentalnie odrzucona przez Argosa,
+- lokalny zapis odtwarza format prawdziwej chmury:
+  A35=8, A36=0 + komplet 53 pol ARGOS_FULL_CONFIG_KEYS,
+- wartosci niezmieniane sa kopiowane ze swiezego POST sterownika,
+- staged overrides podmieniaja tylko zamierzone pola,
+- nastepny POST fizycznego Argosa potwierdza transakcje,
+- brak potwierdzenia po 3 POST-ach przywraca pola do staged buffer.
+
+Regularny POST Argosa nie raportuje L2,L3,J1C,J1D,J1E.
+W prawdziwych przechwyconych FULL CONFIG wszystkie byly zawsze 0.
+Przy lokalnym zapisie v1.1 sa jawnie uzupelniane wartoscia 0.
+
+KRYTYCZNA CECHA PROTOKOLU - CASE HEX
+------------------------------------
+FULL CONFIG musi miec cyfry a..f zapisane MALYMI literami.
+Przy uppercase Argos zachowuje tylko prefiks cyfrowy, np.:
+D -> 0, 2C -> 2, E -> 0, 2F -> 2.
+v1.1 normalizuje caly payload do lowercase.
+
+Polityka harmonogramu lokalnego:
+J1,J2,J3,J6,J7,J8,JC,JD,JE,J11,J12,J13,J17,J18,J19 = ffffff
+(24/7 aktywne; harmonogram prowadzi Home Assistant).
+
+ALARMY / NUMER BLEDU - POTWIERDZONE v1.1
+------------------------------------------
+Pole regularnego POST Argosa:
+  AB = numer bledu / alarm
+
+Kodowanie:
+  ASCII HEX, bez 0x
+  AB=A -> Er10
+  AB=B -> Er11
+  AB=C -> Er12
+  AB=E -> Er14
+
+Potwierdzenie fizycznym testem:
+  otwarcie klapy zasobnika:
+    RAW CHANGE: AB 0 -> E
+  E(hex) = 14(dec) = Er14 "Otwarta klapa zasobnika"
+
+Tabela zaimplementowana w v1.1:
+  0   OK
+  1   Blad czujnika kotla
+  2   Blad czujnika podajnika
+  3   Blad czujnika CWU
+  4   Blad czujnika zaworu mieszajacego
+  5   Blad zapisanych ustawien
+  6   Blad zegara RTC
+  7   Blad zapisanych ustawien
+  8   Piec przegrzany
+  9   Przegrzanie podajnika
+  10  STB - zadzialalo zabezpieczenie
+  11  Kociol wygaszony
+  12  Konczy sie opal w zasobniku
+  13  Blad synchronizacji z siecia
+  14  Otwarta klapa zasobnika
+  15  Blad czujnika zewnetrznego
+  16  Blad czujnika spalin
+  17  Trwa rozpalanie/wygaszanie
+
+Kody spoza tabeli sa nadal publikowane numerycznie i jako tekst:
+  "Nieznany alarm ErX (RAW=...)"
+
+Encje HA:
+  Argos Alarm aktywny
+  Argos Alarm kod
+  Argos Alarm komunikat
+
+Monitor RAW pozostaje do dalszego reverse engineeringu innych pol,
+ale AB od v1.1 jest juz polem znanym i nie generuje RAW CHANGE.
