@@ -1,0 +1,7 @@
+Argos PID ESPHome v1.1
+Base: v1.0 / confirmed v0.5c write protocol
+Web UI: :8080
+Alarm field: AB (ASCII HEX) - confirmed by Er14 physical lid test
+Alarm entities: active + decimal code + message
+Alarm table: Er0..Er17
+RAW unknown-field change monitor: retained for other fields; AB excluded
