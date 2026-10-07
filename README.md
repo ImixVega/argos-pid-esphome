@@ -70,7 +70,7 @@ Plik `argos_pid.cpp` jest cienkim wrapperem dołączającym osiem fragmentów `a
 
 1. Skopiuj katalog `components/argos_pid` do katalogu konfiguracji ESPHome.
 2. Skopiuj `esp32-argospid.yaml`.
-3. Uzupełnij w `secrets.yaml`:
+3. Skopiuj `secrets.example.yaml` jako `secrets.yaml` i uzupełnij dane Wi-Fi:
 
 ```yaml
 wifi_ssid: "..."
