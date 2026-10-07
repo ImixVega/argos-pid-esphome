@@ -1,0 +1,32 @@
+Argos PID ESPHome v1.1 - zmiany
+================================
+
+1. Potwierdzone pole alarmu w regularnym POST Argosa:
+   AB = numer bledu, kodowany jako ASCII HEX.
+
+2. Potwierdzenie z testu fizycznego klapy zasobnika:
+   AB: 0 -> E
+   E(hex) = 14(dec) = Er14 Otwarta klapa zasobnika.
+
+3. Nowe encje Home Assistant:
+   - Argos Alarm aktywny
+   - Argos Alarm kod
+   - Argos Alarm komunikat
+
+4. Alarm kod jest publikowany dziesietnie, np.:
+   AB=A -> 10
+   AB=B -> 11
+   AB=C -> 12
+   AB=E -> 14
+
+5. Tabela komunikatow Er0..Er17 jest zaszyta w komponencie.
+   Nieznany kod nadal jest publikowany jako:
+   Nieznany alarm ErX (RAW=...)
+
+6. AB nie jest juz traktowane jako pole nieznane przez monitor RAW.
+   Monitor RAW pozostaje do dalszego mapowania innych pol.
+
+7. Protokol zapisu konfiguracji nie zostal zmieniony wzgledem v1.0
+   (baza potwierdzonego v0.5c/v0.6a, FULL CONFIG lowercase HEX).
+
+8. Web ESPHome nadal pracuje na porcie 8080; port 80 pozostaje dla Argosa.
