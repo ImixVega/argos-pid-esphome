@@ -1,0 +1,111 @@
+title: Argos PID
+views:
+  - title: Argos PID
+    path: argos-pid
+    icon: mdi:fire
+    cards:
+      - type: entities
+        title: Stan kotła
+        show_header_toggle: false
+        entities:
+          - binary_sensor.argos_stan_online
+          - binary_sensor.argos_alarm_aktywny
+          - sensor.argos_alarm_kod
+          - sensor.argos_alarm_komunikat
+          - sensor.argos_stan_temperatura_kotla
+          - sensor.argos_stan_temperatura_cwu
+          - sensor.argos_stan_temperatura_podajnika
+          - sensor.argos_stan_temperatura_zaworu
+          - sensor.argos_stan_moc_kotla
+          - sensor.argos_stan_opal_w_zbiorniku
+
+      - type: entities
+        title: Zapis konfiguracji
+        show_header_toggle: false
+        entities:
+          - sensor.argos_konfiguracja_status
+          - sensor.argos_konfiguracja_niezapisane_zmiany
+          - button.argos_konfiguracja_zapisz_nastawy
+          - button.argos_konfiguracja_anuluj_zmiany
+
+      - type: entities
+        title: Kocioł
+        show_header_toggle: false
+        entities:
+          - number.argos_kociol_nastawa_dzien
+          - number.argos_kociol_nastawa_noc
+
+      - type: entities
+        title: Palnik
+        show_header_toggle: false
+        entities:
+          - number.argos_palnik_podawanie
+          - number.argos_palnik_przerwa
+          - number.argos_palnik_nadmuch_max
+          - number.argos_palnik_nadmuch_min
+          - number.argos_palnik_moc_minimalna
+
+      - type: entities
+        title: Podtrzymanie
+        show_header_toggle: false
+        entities:
+          - number.argos_podtrzymanie_czas_pracy
+          - number.argos_podtrzymanie_czas_pauzy
+          - number.argos_podtrzymanie_nadmuch
+          - number.argos_podtrzymanie_podaj_co_n_cykli
+          - number.argos_podtrzymanie_krotnosc_podania
+
+      - type: entities
+        title: Pompa CO
+        show_header_toggle: false
+        entities:
+          - select.argos_pompa_co_tryb
+          - number.argos_pompa_co_temperatura_zalaczenia
+          - number.argos_pompa_co_histereza
+
+      - type: entities
+        title: CWU
+        show_header_toggle: false
+        entities:
+          - select.argos_cwu_tryb
+          - number.argos_cwu_temperatura_zadana
+          - number.argos_cwu_histereza
+          - number.argos_cwu_priorytet_c
+
+      - type: entities
+        title: Cyrkulacja
+        show_header_toggle: false
+        entities:
+          - select.argos_cyrkulacja_tryb
+          - number.argos_cyrkulacja_temperatura_co
+          - number.argos_cyrkulacja_temperatura_cwu
+          - number.argos_cyrkulacja_histereza
+          - number.argos_cyrkulacja_czas_pracy
+          - number.argos_cyrkulacja_czas_przerwy
+
+      - type: entities
+        title: Zawór
+        show_header_toggle: false
+        entities:
+          - select.argos_zawor_tryb
+          - number.argos_zawor_temperatura_dzien
+          - number.argos_zawor_temperatura_noc
+
+      - type: entities
+        title: Lato / Zima
+        show_header_toggle: false
+        entities:
+          - select.argos_lato_zima_tryb
+          - number.argos_lato_zima_czas_wymuszenia_zimy
+          - select.argos_lato_zima_wymuszenie_stan
+
+      - type: entities
+        title: Diagnostyka ESP / Chmura
+        show_header_toggle: false
+        entities:
+          - switch.argos_chmura_proxy
+          - binary_sensor.argos_esp_status
+          - sensor.argos_esp_wifi_rssi
+          - sensor.argos_esp_uptime
+          - sensor.argos_esp_wersja
+          - button.argos_esp_restart
