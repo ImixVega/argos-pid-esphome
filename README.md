@@ -42,7 +42,7 @@ W przykładowej konfiguracji:
 - ESP Ethernet: `10.10.15.1`
 - Argos: `10.10.15.11`
 
-Adresy należy dopasować do własnej sieci.
+Adresy należy dopasować do własnej sieci. Są to przykładowe prywatne adresy z instalacji testowej; repozytorium nie zawiera hasła Wi-Fi ani `secrets.yaml`.
 
 ## Struktura
 
@@ -51,6 +51,7 @@ components/argos_pid/
   __init__.py
   argos_pid.cpp
   argos_pid.h
+  argos_pid_part01.inc ... argos_pid_part08.inc
 
 home_assistant/
   argos_pid_dashboard.yaml
@@ -60,7 +61,10 @@ esp32-argospid.yaml
 MAPA_PROTOKOLU_v1.1.txt
 CHANGELOG_v1.1.txt
 VERSION.txt
+NAZEWNICTWO_v06a.txt
 ```
+
+Plik `argos_pid.cpp` jest cienkim wrapperem dołączającym osiem fragmentów `argos_pid_part*.inc`. Fragmenty razem tworzą dokładnie jedną jednostkę translacji komponentu v1.1 — przy kopiowaniu komponentu trzeba zachować cały katalog `components/argos_pid`.
 
 ## Instalacja ESPHome
 
