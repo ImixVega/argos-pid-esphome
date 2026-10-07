@@ -51,7 +51,6 @@ components/argos_pid/
   __init__.py
   argos_pid.cpp
   argos_pid.h
-  argos_pid_part01.inc ... argos_pid_part08.inc
 
 home_assistant/
   argos_pid_dashboard.yaml
@@ -63,8 +62,6 @@ CHANGELOG_v1.1.txt
 VERSION.txt
 NAZEWNICTWO_v06a.txt
 ```
-
-Plik `argos_pid.cpp` jest cienkim wrapperem dołączającym osiem fragmentów `argos_pid_part*.inc`. Fragmenty razem tworzą dokładnie jedną jednostkę translacji komponentu v1.1 — przy kopiowaniu komponentu trzeba zachować cały katalog `components/argos_pid`.
 
 ## Instalacja ESPHome
 
