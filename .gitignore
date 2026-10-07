@@ -1,0 +1,20 @@
+# ESPHome / PlatformIO
+.esphome/
+.pioenvs/
+.piolibdeps/
+.platformio/
+
+# Local secrets
+secrets.yaml
+*.secrets.yaml
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+*.bin
+*.elf
+*.map
