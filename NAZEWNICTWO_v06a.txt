@@ -1,0 +1,37 @@
+ARGOS PID v0.6a - REGULA NAZEWNICTWA
+====================================
+
+Format:
+  Argos <GRUPA> <PARAMETR>
+
+Grupy:
+  Chmura
+  CWU
+  Cyrkulacja
+  ESP
+  Konfiguracja
+  Kociol
+  Lato-Zima
+  Palnik
+  Podtrzymanie
+  Pompa CO
+  Stan
+  Zasobnik
+  Zawor
+
+Najważniejsze zmiany:
+  Argos Zapisz nastawy -> Argos Konfiguracja zapisz nastawy
+  Argos Anuluj zmiany -> Argos Konfiguracja anuluj zmiany
+  Argos Niezapisane zmiany -> Argos Konfiguracja niezapisane zmiany
+  Argos Nastawa kociol dzien/noc -> Argos Kociol nastawa dzien/noc
+  Argos Temperatura ... -> Argos Stan temperatura ...
+  Argos Moc kotla -> Argos Stan moc kotla
+  Argos Opal w zbiorniku -> Argos Stan opal w zbiorniku
+  Uptime Sensor (formatted) -> Argos ESP uptime
+  Version -> Argos ESP wersja
+  Poziom wegla - odleglosc -> Argos Zasobnik odleglosc
+
+Ikony poprawione:
+  temperatura podajnika -> mdi:thermometer
+  Lato-Zima czas wymuszenia -> mdi:clock-outline
+  Lato-Zima wymuszenie stan -> mdi:snowflake
