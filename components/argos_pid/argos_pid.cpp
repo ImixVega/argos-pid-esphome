@@ -633,7 +633,7 @@ bool ArgosPidComponent::proxy_to_cloud_(const std::string &request, std::string 
     timeval ctv{};
     ctv.tv_sec = this->proxy_timeout_ms_ / 1000;
     ctv.tv_usec = (this->proxy_timeout_ms_ % 1000) * 1000;
-    rc = select(fd + 1, nullptr, &wfds, nullptr, &ctv);
+    rc = ::select(fd + 1, nullptr, &wfds, nullptr, &ctv);
     if (rc <= 0) {
       ESP_LOGW(TAG, "CLOUD connect timeout after %lu ms", static_cast<unsigned long>(this->proxy_timeout_ms_));
       close(fd);
