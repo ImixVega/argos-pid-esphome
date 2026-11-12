@@ -10,8 +10,13 @@ esp32:
     advanced:
       sram1_as_iram: true
 
+# VV jest kompilowane, ale po starcie pozostaje wylaczone.
+# Przelacznik HA wlacza pelny RAW tylko dla komponentu argos_pid.
 logger:
-  level: DEBUG
+  level: VERY_VERBOSE
+  initial_level: DEBUG
+  logs:
+    argos_pid: DEBUG
 
 api:
   reboot_timeout: 0s
@@ -187,6 +192,25 @@ switch:
     turn_off_action:
       - lambda: |-
           id(argos).set_proxy_enabled(false);
+
+
+  # v1.1: opcjonalne pelne ramki RAW - tylko dla argos_pid.
+  # Po restarcie OFF. Nie zmienia globalnego logowania innych komponentow.
+  - platform: template
+    id: argos_raw_logs
+    name: "Argos ESP logi RAW"
+    icon: mdi:bug-outline
+    entity_category: diagnostic
+    optimistic: true
+    restore_mode: ALWAYS_OFF
+    turn_on_action:
+      - logger.set_level:
+          level: VERY_VERBOSE
+          tag: argos_pid
+    turn_off_action:
+      - logger.set_level:
+          level: DEBUG
+          tag: argos_pid
 
 text_sensor:
   - platform: template
