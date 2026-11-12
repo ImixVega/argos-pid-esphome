@@ -8,7 +8,7 @@ Projekt przechwytuje komunikację Ethernet sterownika, emuluje lokalnie endpoint
 
 ## Wersja
 
-**v1.1**
+**v1.2**
 
 Najważniejsze elementy obecnej wersji:
 
@@ -19,6 +19,9 @@ Najważniejsze elementy obecnej wersji:
 - wymagane lowercase HEX w odpowiedzi konfiguracyjnej,
 - opcjonalny proxy do e-kotlowni do diagnostyki i dalszego reverse engineeringu,
 - obsługa alarmów z pola **AB**,
+- odczyt stanów trzech pomp (CO, CWU, cyrkulacyjnej),
+- zezwolenie na pracę wentylatora, wysterowanie zadane i wynikowe,
+- pełne logi 103 pól POST dzielone na krótkie fragmenty, z maskowaniem ID,
 - dashboard Home Assistant,
 - dodatkowy czujnik poziomu opału JSN-SR04T.
 
@@ -57,8 +60,8 @@ home_assistant/
   README_dashboard.txt
 
 esp32-argospid.yaml
-MAPA_PROTOKOLU_v1.1.txt
-CHANGELOG_v1.1.txt
+MAPA_PROTOKOLU_v1.2.txt
+CHANGELOG_v1.2.txt
 VERSION.txt
 NAZEWNICTWO_v06a.txt
 ```
@@ -104,7 +107,7 @@ E  -> 0
 2F -> 2
 ```
 
-v1.1 normalizuje wysyłany payload do lowercase.
+v1.2 normalizuje wysyłany payload do lowercase.
 
 ## Alarmy
 
@@ -139,23 +142,42 @@ W Home Assistant dostępne są:
 - **Argos Alarm kod**
 - **Argos Alarm komunikat**
 
-Pełna aktualnie zaimplementowana tabela Er0..Er17 znajduje się w pliku [MAPA_PROTOKOLU_v1.1.txt](MAPA_PROTOKOLU_v1.1.txt).
+Pełna aktualnie zaimplementowana tabela Er0..Er17 znajduje się w pliku [MAPA_PROTOKOLU_v1.2.txt](MAPA_PROTOKOLU_v1.2.txt).
+
+## Pompy i wentylator (v1.2)
+
+Nowe stany zostały potwierdzone kontrolowanymi przełączeniami na fizycznym sterowniku:
+
+| RAW POST | Funkcja | `0` | `1` |
+|---|---|---|---|
+| `AC` | Pompa CO | ON | OFF |
+| `AD` | Pompa CWU | ON | OFF |
+| `AE` | Pompa cyrkulacyjna | ON | OFF |
+| `C9` | Zezwolenie wentylatora | OFF | ON |
+
+Pole `AF` przechowuje procentowe **wysterowanie zadane** wentylatora także wtedy, gdy regulator wyłączył jego wyjście.
+Dlatego nowa encja **Argos Wentylator wysterowanie wynikowe** pokazuje `AF` tylko przy `C9=1`, a w przeciwnym przypadku `0%`.
+Nie jest to niezależny pomiar obrotów wentylatora ani potwierdzenie elektryczne pracy silnika.
+
+Stany odświeżają się wraz z kolejnymi ramkami POST (~27 s). Przy braku komunikacji ostatnia wartość może być nieaktualna; sprawdzaj również **Argos Stan online**.
+
+**Podajnik:** w kontrolowanych testach nie udało się znaleźć jego stanu w 103 polach regularnego POST. Nie publikujemy niepotwierdzonej encji.
 
 ## Diagnostyka — logi RAW na żądanie
 
 W aktualnym YAML jest przełącznik **Argos ESP logi RAW** (w Home Assistant w kategorii diagnostyki).
 
 - **OFF** (domyślnie, również po restarcie) — standardowe logi DEBUG.
-- **ON** — komunikaty VERY_VERBOSE tylko z tagu `argos_pid`, w tym pełne `RAW BODY` kolejnych POST-ów.
+- **ON** — komunikaty VERY_VERBOSE tylko z tagu `argos_pid`, w tym całe 103 pola regularnego POST, dzielone na krótkie, numerowane komunikaty `RAW POST`.
 - Po wyłączeniu wraca DEBUG bez restartu i bez ponownego wgrywania firmware.
 
-`logger.level: VERY_VERBOSE` określa, które komunikaty są **kompilowane** do firmware; `logger.initial_level: DEBUG` oraz osobny poziom tagu `argos_pid` ograniczają rzeczywiście wypisywane logi przy codziennym działaniu. Włączenie RAW służy do krótkich sesji diagnostycznych i może spowalniać sterownik.
+`logger.level: VERY_VERBOSE` określa, które komunikaty są **kompilowane** do firmware; `logger.initial_level: INFO` oraz osobny poziom tagu `argos_pid` ograniczają rzeczywiście wypisywane logi przy codziennym działaniu. Włączenie RAW służy do krótkich sesji diagnostycznych i może spowalniać sterownik.
 
-**Uwaga o prywatności:** `RAW BODY` zawiera między innymi identyfikator sterownika (`A0`). Zamaskuj go przed publikacją lub przesłaniem logu.
+**Uwaga o prywatności:** pole `A0` jest maskowane w komunikatach `RAW POST`; przed publikacją logu nadal sprawdź pozostałe dane.
 
 ## Proxy chmury
 
-Switch **Argos Chmura / Proxy** służy wyłącznie do diagnostyki i dalszego reverse engineeringu.
+Switch **Argos Chmura Proxy** służy wyłącznie do diagnostyki i dalszego reverse engineeringu.
 
 - po restarcie jest OFF,
 - OFF = lokalna praca,
@@ -185,7 +207,7 @@ Encje nastaw są oznaczone jako konfiguracja, aby nie zaśmiecały głównego pa
 
 Aktualna mapa rozpoznanych pól:
 
-[MAPA_PROTOKOLU_v1.1.txt](MAPA_PROTOKOLU_v1.1.txt)
+[MAPA_PROTOKOLU_v1.2.txt](MAPA_PROTOKOLU_v1.2.txt)
 
 Projekt nadal zawiera monitor zmian nieznanych pól RAW, dzięki czemu można dalej rozszerzać mapę protokołu.
 
@@ -193,12 +215,12 @@ Projekt nadal zawiera monitor zmian nieznanych pól RAW, dzięki czemu można da
 
 - harmonogramy J* nie są jeszcze edytowane lokalnie,
 - część pól protokołu nadal nie ma potwierdzonego znaczenia,
-- pełny natywny build ESPHome nie był wykonywany w środowisku generującym paczkę; komponent Python przeszedł `py_compile` i kontrole statyczne,
+- wersja z odczytem pomp i wentylatora została wgrana i potwierdzona jako działająca na urządzeniu testowym,
 - konfiguracja była testowana na konkretnym sterowniku i wersji firmware, więc inne rewizje mogą zachowywać się inaczej.
 
 ## Changelog
 
-Zobacz [CHANGELOG_v1.1.txt](CHANGELOG_v1.1.txt).
+Zobacz [CHANGELOG_v1.2.txt](CHANGELOG_v1.2.txt).
 
 ## Licencja
 

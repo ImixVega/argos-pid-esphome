@@ -1,0 +1,12 @@
+Argos PID ESPHome v1.2 (2026-11-12)
+====================================
+- Dodano potwierdzone stany pomp: AC pompa CO, AD pompa CWU, AE pompa cyrkulacyjna.
+- Wszystkie trzy pompy maja logike odwrócona: 0=ON, 1=OFF.
+- Dodano flage zezwolenia wentylatora C9 (1=ON), nie pomiar predkosci obrotowej.
+- Dodano zadane wysterowanie wentylatora (AF) i wysterowanie wynikowe (AF gdy C9=1, w innym przypadku 0%).
+- Zachowano stara encje 'Argos Stan moc kotla' oraz pozostale encje i obsluge alarmow.
+- Dodano pelne logi 103 pol regularnego POST, numerowane fragmenty, A0 maskowane.
+- Pelne RAW wlaczane i wylaczane osobnym switchem diagnostycznym Home Assistant.
+- Zachowano lokalna konfiguracje i dotychczasowa obsluge proxy chmury.
+- Nie dodano stanu podajnika: brak jego odpowiednika w kontrolowanych odczytach.
+- Wersja oparta na firmware pomyslnie przetestowanym na urzadzeniu przez uzytkownika.
