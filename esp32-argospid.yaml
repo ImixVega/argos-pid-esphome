@@ -14,7 +14,7 @@ esp32:
 # Przelacznik HA wlacza pelny RAW tylko dla komponentu argos_pid.
 logger:
   level: VERY_VERBOSE
-  initial_level: DEBUG
+  initial_level: INFO
   logs:
     argos_pid: DEBUG
 
@@ -65,7 +65,7 @@ ethernet:
     subnet: 255.255.255.0
 
 # ============================================================
-# ARGOS PID PLUS v1.1 - LOCAL FIRST + FORMULARZ + ALARMY
+# ARGOS PID PLUS v1.2 - LOCAL FIRST + FORMULARZ + ALARMY + WYJSCIA
 # Nazewnictwo encji: "Argos <grupa> <parametr>" - celowo pod sortowanie alfabetyczne HA.
 # ============================================================
 # - po starcie ESP czeka na pierwszy poprawny POST Argosa i wczytuje stan,
@@ -161,6 +161,27 @@ argos_pid:
   power_percent:
     name: "Argos Stan moc kotla"
     icon: mdi:fire
+
+  # v1.2 fan output: AF is demand, C9 is enable (not RPM feedback).
+  fan_command_percent:
+    name: "Argos Wentylator wysterowanie"
+    icon: mdi:fan
+  fan_effective_percent:
+    name: "Argos Wentylator wysterowanie wynikowe"
+    icon: mdi:fan-speed-3
+  # Pump outputs: AC/AD/AE are active-low.
+  co_pump_running:
+    name: "Argos Stan pompa CO"
+    icon: mdi:pump
+  dhw_pump_running:
+    name: "Argos Stan pompa CWU"
+    icon: mdi:pump
+  circulation_pump_running:
+    name: "Argos Stan pompa cyrkulacyjna"
+    icon: mdi:pump
+  fan_enabled:
+    name: "Argos Wentylator zalaczenie"
+    icon: mdi:fan
   exhaust_temperature_provisional:
     name: "Argos Stan temperatura spalin (provisional)"
     entity_category: diagnostic

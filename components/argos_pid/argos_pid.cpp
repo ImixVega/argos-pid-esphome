@@ -173,7 +173,7 @@ void ArgosPidComponent::track_unknown_raw_changes_(
 }
 
 void ArgosPidComponent::setup() {
-  ESP_LOGI(TAG, "Argos PID v1.1 starting");
+  ESP_LOGI(TAG, "Argos PID v1.2 starting");
   ESP_LOGI(TAG, "Mode: %s", this->proxy_mode_ ? "PROXY / DIAGNOSTIC" : "LOCAL / HA CONFIG");
   ESP_LOGI(TAG, "DNS/HTTP bind IP: %s", this->bind_ip_.c_str());
   ESP_LOGI(TAG, "Expected Argos IP: %s", this->expected_device_ip_.c_str());
@@ -771,6 +771,40 @@ void ArgosPidComponent::log_body_chunks_(const char *prefix, const std::string &
   }
 }
 
+void ArgosPidComponent::log_post_raw_chunks_(const std::string &body) {
+  // v1.2: all fields in short records; A0 device ID is masked.
+  constexpr size_t MAX_CHUNK = 170;
+  std::vector<std::string> chunks;
+  std::string chunk;
+  size_t pos = 0;
+  while (pos < body.size()) {
+    const size_t amp = body.find('&', pos);
+    std::string field = body.substr(pos, amp == std::string::npos ? std::string::npos : amp - pos);
+    if (field.rfind("A0=", 0) == 0)
+      field = "A0=" + this->masked_device_id_();
+    if (!field.empty()) {
+      if (!chunk.empty() && chunk.size() + 1 + field.size() > MAX_CHUNK) {
+        chunks.push_back(std::move(chunk));
+        chunk.clear();
+      }
+      if (!chunk.empty())
+        chunk.push_back('&');
+      chunk += field;
+    }
+    if (amp == std::string::npos)
+      break;
+    pos = amp + 1;
+  }
+  if (!chunk.empty())
+    chunks.push_back(std::move(chunk));
+  for (size_t i = 0; i < chunks.size(); i++) {
+    ESP_LOGVV(TAG, "RAW POST #%lu [%u/%u]: %s",
+              static_cast<unsigned long>(this->packet_count_),
+              static_cast<unsigned>(i + 1), static_cast<unsigned>(chunks.size()),
+              chunks[i].c_str());
+  }
+}
+
 void ArgosPidComponent::process_cloud_response_(const std::string &body, int status_code, uint32_t latency_ms) {
   const int fields = count_key_value_lines_(body);
   const bool full_config = this->is_full_config_response_(body);
@@ -871,7 +905,7 @@ void ArgosPidComponent::process_argos_body_(const std::string &body) {
            fields.count("A2") ? fields.at("A2").c_str() : "?", a2 / 10.0f,
            fields.count("B3") ? fields.at("B3").c_str() : "?", static_cast<unsigned long>(b3),
            fields.count("G3") ? fields.at("G3").c_str() : "?", static_cast<unsigned long>(g3));
-  ESP_LOGVV(TAG, "RAW BODY: %s", body.c_str());
+  this->log_post_raw_chunks_(body);
 
   // v1.1: AB jest potwierdzonym polem numeru bledu. Monitor RAW pozostaje
   // tylko dla nadal nieznanych pol protokolu.
@@ -1462,6 +1496,28 @@ void ArgosPidComponent::publish_fields_(const std::map<std::string, std::string>
   HEX_PUBLISH("A5", this->temperature_valve_sensor_, 10.0f);
   HEX_PUBLISH("A6", this->fuel_kg_sensor_, 1.0f);
   HEX_PUBLISH("AF", this->power_percent_sensor_, 1.0f);
+
+  // v1.2: AF demand remains nonzero even with fan disabled (C9=0).
+  uint32_t fan_command = 0;
+  uint32_t fan_enable = 0;
+  const bool has_command = hex_value_(f, "AF", fan_command);
+  const bool has_enable = hex_value_(f, "C9", fan_enable);
+  if (has_command)
+    publish_(this->fan_command_percent_sensor_, static_cast<float>(fan_command));
+  if (has_enable) {
+    if (this->fan_enabled_binary_sensor_ != nullptr)
+      this->fan_enabled_binary_sensor_->publish_state(fan_enable != 0);
+    if (has_command)
+      publish_(this->fan_effective_percent_sensor_,
+               fan_enable != 0 ? static_cast<float>(fan_command) : 0.0f);
+  }
+  // Three pumps: active-low status flags confirmed by manual testing.
+  if (hex_value_(f, "AC", v) && this->co_pump_running_binary_sensor_ != nullptr)
+    this->co_pump_running_binary_sensor_->publish_state(v == 0);
+  if (hex_value_(f, "AD", v) && this->dhw_pump_running_binary_sensor_ != nullptr)
+    this->dhw_pump_running_binary_sensor_->publish_state(v == 0);
+  if (hex_value_(f, "AE", v) && this->circulation_pump_running_binary_sensor_ != nullptr)
+    this->circulation_pump_running_binary_sensor_->publish_state(v == 0);
   HEX_PUBLISH("A10", this->exhaust_temperature_provisional_sensor_, 10.0f);
   HEX_PUBLISH("A18", this->current_power_kw_provisional_sensor_, 10.0f);
 

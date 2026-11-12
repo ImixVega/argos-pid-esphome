@@ -20,6 +20,17 @@ views:
           - sensor.argos_stan_opal_w_zbiorniku
 
       - type: entities
+        title: Wyjscia pomp i wentylator
+        show_header_toggle: false
+        entities:
+          - binary_sensor.argos_stan_pompa_co
+          - binary_sensor.argos_stan_pompa_cwu
+          - binary_sensor.argos_stan_pompa_cyrkulacyjna
+          - binary_sensor.argos_wentylator_zalaczenie
+          - sensor.argos_wentylator_wysterowanie
+          - sensor.argos_wentylator_wysterowanie_wynikowe
+
+      - type: entities
         title: Zapis konfiguracji
         show_header_toggle: false
         entities:

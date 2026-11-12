@@ -55,6 +55,11 @@ class ArgosPidComponent : public Component {
   void set_dhw_priority_binary_sensor(binary_sensor::BinarySensor *s) { dhw_priority_binary_sensor_ = s; }
   void set_cloud_online_binary_sensor(binary_sensor::BinarySensor *s) { cloud_online_binary_sensor_ = s; }
   void set_alarm_active_binary_sensor(binary_sensor::BinarySensor *s) { alarm_active_binary_sensor_ = s; }
+  // v1.2: verified output flags; 0=ON for pumps.
+  void set_co_pump_running_binary_sensor(binary_sensor::BinarySensor *s) { co_pump_running_binary_sensor_ = s; }
+  void set_dhw_pump_running_binary_sensor(binary_sensor::BinarySensor *s) { dhw_pump_running_binary_sensor_ = s; }
+  void set_circulation_pump_running_binary_sensor(binary_sensor::BinarySensor *s) { circulation_pump_running_binary_sensor_ = s; }
+  void set_fan_enabled_binary_sensor(binary_sensor::BinarySensor *s) { fan_enabled_binary_sensor_ = s; }
 
   void set_cloud_response_type_text_sensor(text_sensor::TextSensor *s) { cloud_response_type_text_sensor_ = s; }
   void set_cloud_last_summary_text_sensor(text_sensor::TextSensor *s) { cloud_last_summary_text_sensor_ = s; }
@@ -70,6 +75,8 @@ class ArgosPidComponent : public Component {
   ARGOS_SENSOR_SETTER(temperature_valve)
   ARGOS_SENSOR_SETTER(fuel_kg)
   ARGOS_SENSOR_SETTER(power_percent)
+  ARGOS_SENSOR_SETTER(fan_command_percent)
+  ARGOS_SENSOR_SETTER(fan_effective_percent)
   ARGOS_SENSOR_SETTER(exhaust_temperature_provisional)
   ARGOS_SENSOR_SETTER(current_power_kw_provisional)
   ARGOS_SENSOR_SETTER(boiler_night_setpoint)
@@ -126,6 +133,7 @@ class ArgosPidComponent : public Component {
   void set_cloud_online_(bool state);
   void learn_normal_response_(const std::string &body);
   void log_body_chunks_(const char *prefix, const std::string &body);
+  void log_post_raw_chunks_(const std::string &body);
 
   // v0.5 staged configuration helpers
   bool is_full_config_response_(const std::string &body) const;
@@ -207,6 +215,10 @@ class ArgosPidComponent : public Component {
   binary_sensor::BinarySensor *dhw_priority_binary_sensor_{nullptr};
   binary_sensor::BinarySensor *cloud_online_binary_sensor_{nullptr};
   binary_sensor::BinarySensor *alarm_active_binary_sensor_{nullptr};
+  binary_sensor::BinarySensor *co_pump_running_binary_sensor_{nullptr};
+  binary_sensor::BinarySensor *dhw_pump_running_binary_sensor_{nullptr};
+  binary_sensor::BinarySensor *circulation_pump_running_binary_sensor_{nullptr};
+  binary_sensor::BinarySensor *fan_enabled_binary_sensor_{nullptr};
   text_sensor::TextSensor *cloud_response_type_text_sensor_{nullptr};
   text_sensor::TextSensor *cloud_last_summary_text_sensor_{nullptr};
   text_sensor::TextSensor *raw_last_change_text_sensor_{nullptr};
@@ -219,6 +231,8 @@ class ArgosPidComponent : public Component {
   ARGOS_SENSOR_MEMBER(temperature_valve)
   ARGOS_SENSOR_MEMBER(fuel_kg)
   ARGOS_SENSOR_MEMBER(power_percent)
+  ARGOS_SENSOR_MEMBER(fan_command_percent)
+  ARGOS_SENSOR_MEMBER(fan_effective_percent)
   ARGOS_SENSOR_MEMBER(exhaust_temperature_provisional)
   ARGOS_SENSOR_MEMBER(current_power_kw_provisional)
   ARGOS_SENSOR_MEMBER(boiler_night_setpoint)

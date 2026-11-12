@@ -1,7 +1,4 @@
-Argos PID ESPHome v1.1
-Base: v1.0 / confirmed v0.5c write protocol
-Web UI: :8080
-Alarm field: AB (ASCII HEX) - confirmed by Er14 physical lid test
-Alarm entities: active + decimal code + message
-Alarm table: Er0..Er17
-RAW unknown-field change monitor: retained for other fields; AB excluded
+Argos PID ESPHome v1.2
+Tested pump/fan outputs: AC, AD, AE (0=ON), C9 fan enable (1=ON), AF demand.
+Full 103-field RAW tracing and previous cloud/alarms/config features preserved.
+Feeder state intentionally not exposed.

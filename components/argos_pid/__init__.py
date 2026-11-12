@@ -56,6 +56,13 @@ CONF_TEMPERATURE_FEEDER = "temperature_feeder"
 CONF_TEMPERATURE_VALVE = "temperature_valve"
 CONF_FUEL_KG = "fuel_kg"
 CONF_POWER_PERCENT = "power_percent"
+# v1.2: pump and fan output flags
+CONF_CO_PUMP_RUNNING = "co_pump_running"
+CONF_DHW_PUMP_RUNNING = "dhw_pump_running"
+CONF_CIRCULATION_PUMP_RUNNING = "circulation_pump_running"
+CONF_FAN_ENABLED = "fan_enabled"
+CONF_FAN_COMMAND_PERCENT = "fan_command_percent"
+CONF_FAN_EFFECTIVE_PERCENT = "fan_effective_percent"
 CONF_EXHAUST_TEMPERATURE_PROVISIONAL = "exhaust_temperature_provisional"
 CONF_CURRENT_POWER_KW_PROVISIONAL = "current_power_kw_provisional"
 
@@ -141,6 +148,12 @@ CONFIG_SCHEMA = cv.Schema(
         cv.Optional(CONF_TEMPERATURE_VALVE): temp_sensor_schema(1),
         cv.Optional(CONF_FUEL_KG): numeric_sensor_schema(UNIT_KILOGRAM, 0),
         cv.Optional(CONF_POWER_PERCENT): numeric_sensor_schema(UNIT_PERCENT, 0),
+        cv.Optional(CONF_FAN_COMMAND_PERCENT): numeric_sensor_schema(UNIT_PERCENT, 0),
+        cv.Optional(CONF_FAN_EFFECTIVE_PERCENT): numeric_sensor_schema(UNIT_PERCENT, 0),
+        cv.Optional(CONF_CO_PUMP_RUNNING): binary_sensor.binary_sensor_schema(),
+        cv.Optional(CONF_DHW_PUMP_RUNNING): binary_sensor.binary_sensor_schema(),
+        cv.Optional(CONF_CIRCULATION_PUMP_RUNNING): binary_sensor.binary_sensor_schema(),
+        cv.Optional(CONF_FAN_ENABLED): binary_sensor.binary_sensor_schema(),
         cv.Optional(CONF_EXHAUST_TEMPERATURE_PROVISIONAL): temp_sensor_schema(1),
         cv.Optional(CONF_CURRENT_POWER_KW_PROVISIONAL): sensor.sensor_schema(
             unit_of_measurement=UNIT_KILOWATT,
@@ -187,6 +200,8 @@ _SENSOR_SETTERS = {
     CONF_TEMPERATURE_VALVE: "set_temperature_valve_sensor",
     CONF_FUEL_KG: "set_fuel_kg_sensor",
     CONF_POWER_PERCENT: "set_power_percent_sensor",
+    CONF_FAN_COMMAND_PERCENT: "set_fan_command_percent_sensor",
+    CONF_FAN_EFFECTIVE_PERCENT: "set_fan_effective_percent_sensor",
     CONF_EXHAUST_TEMPERATURE_PROVISIONAL: "set_exhaust_temperature_provisional_sensor",
     CONF_CURRENT_POWER_KW_PROVISIONAL: "set_current_power_kw_provisional_sensor",
     CONF_BOILER_NIGHT_SETPOINT: "set_boiler_night_setpoint_sensor",
@@ -262,6 +277,15 @@ async def to_code(config):
     if CONF_ALARM_ACTIVE in config:
         bs = await binary_sensor.new_binary_sensor(config[CONF_ALARM_ACTIVE])
         cg.add(var.set_alarm_active_binary_sensor(bs))
+    for key, setter in (
+        (CONF_CO_PUMP_RUNNING, "set_co_pump_running_binary_sensor"),
+        (CONF_DHW_PUMP_RUNNING, "set_dhw_pump_running_binary_sensor"),
+        (CONF_CIRCULATION_PUMP_RUNNING, "set_circulation_pump_running_binary_sensor"),
+        (CONF_FAN_ENABLED, "set_fan_enabled_binary_sensor"),
+    ):
+        if key in config:
+            bs = await binary_sensor.new_binary_sensor(config[key])
+            cg.add(getattr(var, setter)(bs))
     if CONF_ALARM_MESSAGE in config:
         ts = await text_sensor.new_text_sensor(config[CONF_ALARM_MESSAGE])
         cg.add(var.set_alarm_message_text_sensor(ts))
