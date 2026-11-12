@@ -141,6 +141,18 @@ W Home Assistant dostępne są:
 
 Pełna aktualnie zaimplementowana tabela Er0..Er17 znajduje się w pliku [MAPA_PROTOKOLU_v1.1.txt](MAPA_PROTOKOLU_v1.1.txt).
 
+## Diagnostyka — logi RAW na żądanie
+
+W aktualnym YAML jest przełącznik **Argos ESP logi RAW** (w Home Assistant w kategorii diagnostyki).
+
+- **OFF** (domyślnie, również po restarcie) — standardowe logi DEBUG.
+- **ON** — komunikaty VERY_VERBOSE tylko z tagu `argos_pid`, w tym pełne `RAW BODY` kolejnych POST-ów.
+- Po wyłączeniu wraca DEBUG bez restartu i bez ponownego wgrywania firmware.
+
+`logger.level: VERY_VERBOSE` określa, które komunikaty są **kompilowane** do firmware; `logger.initial_level: DEBUG` oraz osobny poziom tagu `argos_pid` ograniczają rzeczywiście wypisywane logi przy codziennym działaniu. Włączenie RAW służy do krótkich sesji diagnostycznych i może spowalniać sterownik.
+
+**Uwaga o prywatności:** `RAW BODY` zawiera między innymi identyfikator sterownika (`A0`). Zamaskuj go przed publikacją lub przesłaniem logu.
+
 ## Proxy chmury
 
 Switch **Argos Chmura / Proxy** służy wyłącznie do diagnostyki i dalszego reverse engineeringu.
