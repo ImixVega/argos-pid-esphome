@@ -104,6 +104,7 @@ views:
         show_header_toggle: false
         entities:
           - switch.argos_chmura_proxy
+          - switch.argos_esp_logi_raw
           - binary_sensor.argos_esp_status
           - sensor.argos_esp_wifi_rssi
           - sensor.argos_esp_uptime
