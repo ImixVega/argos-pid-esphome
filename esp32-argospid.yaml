@@ -179,7 +179,7 @@ argos_pid:
 switch:
   - platform: template
     id: argos_cloud_proxy
-    name: "Argos Chmura / Proxy"
+    name: "Argos Chmura Proxy"
     icon: mdi:cloud-sync-outline
     entity_category: diagnostic
     optimistic: false
