@@ -30,3 +30,8 @@ Argos PID ESPHome v1.1 - zmiany
    (baza potwierdzonego v0.5c/v0.6a, FULL CONFIG lowercase HEX).
 
 8. Web ESPHome nadal pracuje na porcie 8080; port 80 pozostaje dla Argosa.
+
+9. Dodatkowy przelacznik w HA: Argos ESP logi RAW.
+   Firmware kompiluje poziom VERY_VERBOSE, ale startuje z DEBUG.
+   Przelacznik czasowo wlacza pelne RAW BODY tylko dla tagu argos_pid.
+   Po restarcie OFF; pozostale komponenty utrzymuja DEBUG.
